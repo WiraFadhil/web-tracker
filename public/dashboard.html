@@ -91,15 +91,20 @@
         }
         
         tbody.innerHTML = data.reverse().map((d, i) => {
-          const location = d.latitude && d.longitude
-            ? `<a href="https://maps.google.com/?q=${d.latitude},${d.longitude}" target="_blank" class="coords">${d.latitude.toFixed(4)}, ${d.longitude.toFixed(4)} → Maps</a>`
+          const isGps = d.source === 'gps' || (d.latitude && !d.city && !d.isp);
+          const lat = d.latitude, lng = d.longitude;
+          const location = lat && lng
+            ? `<a href="https://maps.google.com/?q=${lat},${lng}" target="_blank" class="coords">${lat.toFixed(4)}, ${lng.toFixed(4)} → Maps</a>`
             : '<span style="color:#666;">-</span>';
+          const badge = isGps
+            ? '<span style="background:#4ecca3;color:#0b0b2a;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;">GPS presisi</span>'
+            : '<span style="background:#555;color:#eee;padding:2px 8px;border-radius:10px;font-size:11px;">IP (kota)</span>';
           const address = d.city ? `${d.city}, ${d.region}<br><small style="color:#666;">${d.country}</small>` : (d.country || '-');
           return `
             <tr>
               <td>${i + 1}</td>
               <td>${new Date(d.timestamp).toLocaleString('id-ID')}</td>
-              <td>${location}</td>
+              <td>${location}<br>${badge}</td>
               <td>${address}</td>
               <td style="font-family: monospace;">${d.ip || '-'}</td>
               <td>${d.page || '-'}</td>

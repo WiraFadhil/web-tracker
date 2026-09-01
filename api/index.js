@@ -93,6 +93,7 @@ app.post('/api/track', async (req, res) => {
 
     const record = {
       ip: ip,
+      source: browserLat ? 'gps' : 'ip',
       latitude: browserLat || (ipLocation ? ipLocation.lat : null),
       longitude: browserLng || (ipLocation ? ipLocation.lng : null),
       city: ipLocation ? ipLocation.city : null,

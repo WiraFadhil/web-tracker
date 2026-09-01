@@ -4,6 +4,7 @@
 create table if not exists public.locations (
   id bigint generated always as identity primary key,
   ip text,
+  source text,
   latitude double precision,
   longitude double precision,
   city text,
