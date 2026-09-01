@@ -1,0 +1,9 @@
+node_modules/
+location-data.json
+tunnel.log
+tunnel-link.txt
+cloudflared-out.log
+cloudflared-err.log
+start.bat
+stop.bat
+.env

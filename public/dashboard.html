@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Location Tracker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    header { background: #16213e; padding: 20px; text-align: center; border-bottom: 3px solid #0f3460; }
+    h1 { color: #e94560; }
+    .stats { display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+    .stat-box { background: #16213e; padding: 20px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center; }
+    .stat-box h3 { color: #0f3460; margin-bottom: 10px; }
+    .stat-box .number { font-size: 36px; color: #e94560; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #16213e; border-radius: 10px; overflow: hidden; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #0f3460; }
+    th { background: #0f3460; color: #e94560; }
+    tr:hover { background: #1a1a40; }
+    .coords { color: #4ecca3; font-family: monospace; }
+    .map-link { color: #3498db; text-decoration: none; }
+    .map-link:hover { text-decoration: underline; }
+    .btn { background: #e94560; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+    .btn:hover { background: #c0392b; }
+    .refresh { background: #0f3460; margin-right: 10px; }
+    .no-data { text-align: center; padding: 40px; color: #666; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard Tracking Lokasi</h1>
+    <p style="margin-top: 10px; color: #aaa;">Semua data lokasi yang terkumpul</p>
+  </header>
+  
+  <div class="container">
+    <div class="stats">
+      <div class="stat-box">
+        <h3>Total Kunjungan</h3>
+        <div class="number" id="totalCount">0</div>
+      </div>
+      <div class="stat-box">
+        <h3>Hari Ini</h3>
+        <div class="number" id="todayCount">0</div>
+      </div>
+      <div class="stat-box">
+        <h3>Kota Unik</h3>
+        <div class="number" id="uniqueCount">0</div>
+      </div>
+    </div>
+    
+    <button class="btn refresh" onclick="loadData()">Refresh</button>
+    <button class="btn" onclick="clearData()">Hapus Semua Data</button>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Waktu</th>
+          <th>Lokasi</th>
+          <th>Alamat</th>
+          <th>IP</th>
+          <th>Halaman</th>
+        </tr>
+      </thead>
+      <tbody id="locationTable">
+        <tr><td colspan="6" class="no-data">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function loadData() {
+      try {
+        const res = await fetch('/api/locations');
+        const data = await res.json();
+        
+        document.getElementById('totalCount').textContent = data.length;
+        
+        const today = new Date().toDateString();
+        const todayData = data.filter(d => new Date(d.timestamp).toDateString() === today);
+        document.getElementById('todayCount').textContent = todayData.length;
+        
+        const uniqueCities = new Set(data.filter(d => d.city).map(d => d.city).filter(Boolean));
+        document.getElementById('uniqueCount').textContent = uniqueCities.size;
+        
+        const tbody = document.getElementById('locationTable');
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="no-data">Belum ada data</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = data.reverse().map((d, i) => {
+          const location = d.latitude && d.longitude
+            ? `<a href="https://maps.google.com/?q=${d.latitude},${d.longitude}" target="_blank" class="coords">${d.latitude.toFixed(4)}, ${d.longitude.toFixed(4)} → Maps</a>`
+            : '<span style="color:#666;">-</span>';
+          const address = d.city ? `${d.city}, ${d.region}<br><small style="color:#666;">${d.country}</small>` : (d.country || '-');
+          return `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${new Date(d.timestamp).toLocaleString('id-ID')}</td>
+              <td>${location}</td>
+              <td>${address}</td>
+              <td style="font-family: monospace;">${d.ip || '-'}</td>
+              <td>${d.page || '-'}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Load error:', e);
+      }
+    }
+    
+    async function clearData() {
+      if (confirm('Hapus semua data?')) {
+        await fetch('/api/locations', { method: 'DELETE' });
+        loadData();
+      }
+    }
+    
+    loadData();
+    setInterval(loadData, 5000);
+  </script>
+</body>
+</html>

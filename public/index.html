@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Kita</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    header { background: #2c3e50; color: white; padding: 20px 0; text-align: center; }
+    nav { background: #34495e; padding: 15px; text-align: center; }
+    nav a { color: white; text-decoration: none; margin: 0 20px; font-size: 18px; cursor: pointer; }
+    nav a:hover { text-decoration: underline; }
+    .content { background: white; margin-top: 20px; padding: 30px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    h1 { margin-bottom: 20px; }
+    p { line-height: 1.6; margin-bottom: 15px; }
+    .cta-button { display: inline-block; background: #3498db; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; margin-top: 20px; cursor: pointer; }
+    .cta-button:hover { background: #2980b9; }
+    footer { text-align: center; padding: 20px; margin-top: 20px; color: #666; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Selamat Datang di Website Kami</h1>
+  </header>
+  
+  <nav>
+    <a onclick="trackAndGo('Beranda')">Beranda</a>
+    <a onclick="trackAndGo('Tentang')">Tentang</a>
+    <a onclick="trackAndGo('Produk')">Produk</a>
+    <a onclick="trackAndGo('Kontak')">Kontak</a>
+  </nav>
+  
+  <div class="container">
+    <div class="content">
+      <h1>Website Sederhana</h1>
+      <p>Ini adalah website sederhana. Ketika Anda mengklik link di atas, lokasi Anda akan terdeteksi otomatis tanpa izin apapun.</p>
+      <p>Data lokasi disimpan secara permanen dan dapat dilihat melalui dashboard admin.</p>
+      
+      <a class="cta-button" onclick="trackAndGo('Promo')">Lihat Promo</a>
+    </div>
+  </div>
+  
+  <footer>
+    <p>&copy; 2026 Website Kami. Semua hak dilindungi.</p>
+  </footer>
+
+  <script>
+    function trackAndGo(page) {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: page })
+      });
+    }
+  </script>
+</body>
+</html>
