@@ -47,19 +47,51 @@
   </footer>
 
   <script>
-    function trackAndGo(page) {
+    function sendTrack(data) {
+      var payload = JSON.stringify(data);
       if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/track', new Blob(
-          [JSON.stringify({ page: page })],
-          { type: 'application/json' }
-        ));
+        navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
       } else {
         fetch('/api/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ page: page })
+          body: payload
         });
       }
+    }
+
+    function trackAndGo(page) {
+      var hasGps = false;
+
+      // Try GPS first for high-precision location. If permission is
+      // denied or it fails, fall back to IP-based geolocation.
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            hasGps = true;
+            sendTrack({
+              page: page,
+              browserLat: position.coords.latitude,
+              browserLng: position.coords.longitude
+            });
+          },
+          function () {
+            // Permission denied or failed -> fallback to IP only
+            sendTrack({ page: page });
+          },
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        );
+      } else {
+        sendTrack({ page: page });
+      }
+
+      // Safety: if GPS takes too long or silently does nothing, also send
+      // an IP-based fallback after a delay (if not already sent).
+      setTimeout(function () {
+        if (!hasGps) {
+          sendTrack({ page: page });
+        }
+      }, 9000);
     }
 
     document.addEventListener('click', function (e) {
