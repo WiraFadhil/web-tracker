@@ -26,10 +26,10 @@
   </header>
   
   <nav>
-    <a onclick="trackAndGo('Beranda')">Beranda</a>
-    <a onclick="trackAndGo('Tentang')">Tentang</a>
-    <a onclick="trackAndGo('Produk')">Produk</a>
-    <a onclick="trackAndGo('Kontak')">Kontak</a>
+    <a href="#" data-track="Beranda">Beranda</a>
+    <a href="#" data-track="Tentang">Tentang</a>
+    <a href="#" data-track="Produk">Produk</a>
+    <a href="#" data-track="Kontak">Kontak</a>
   </nav>
   
   <div class="container">
@@ -38,7 +38,7 @@
       <p>Ini adalah website sederhana. Ketika Anda mengklik link di atas, lokasi Anda akan terdeteksi otomatis tanpa izin apapun.</p>
       <p>Data lokasi disimpan secara permanen dan dapat dilihat melalui dashboard admin.</p>
       
-      <a class="cta-button" onclick="trackAndGo('Promo')">Lihat Promo</a>
+      <a href="#" class="cta-button" data-track="Promo">Lihat Promo</a>
     </div>
   </div>
   
@@ -48,12 +48,27 @@
 
   <script>
     function trackAndGo(page) {
-      fetch('/api/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page: page })
-      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/track', new Blob(
+          [JSON.stringify({ page: page })],
+          { type: 'application/json' }
+        ));
+      } else {
+        fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ page: page })
+        });
+      }
     }
+
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-track]');
+      if (el) {
+        e.preventDefault();
+        trackAndGo(el.getAttribute('data-track'));
+      }
+    });
   </script>
 </body>
 </html>
