@@ -7,3 +7,6 @@ cloudflared-err.log
 start.bat
 stop.bat
 .env
+.vercel
+location-data.json
+assets/
